@@ -27,8 +27,8 @@ main(int _argc, char* _argv[])
 
         svec* tokens = tokenize(input);
         ast* token_ast = parse_cmd(tokens);
-        print_ast(token_ast);
-//      execute(token_ast);
+//        print_ast(token_ast);
+        execute(token_ast);
         
         free_ast(token_ast);
         free_svec(tokens);

@@ -82,21 +82,11 @@ parse_cmd(svec* tokens)
             svec* left = slice(tokens, 0, op_index);
             svec* right = slice(tokens, op_index + 1, tokens->size); 
           
-            //ast* ast = make_ast_op(op, parse_cmd(left), parse_cmd(right));
+            ast* op_ast = make_ast_op(op, parse_cmd(left), parse_cmd(right));
            
-            ast* ast_left = parse_cmd(left);
-            printf("ast_left pointer: %p\n", ast_left);
-
-            ast* ast_right = parse_cmd(right);
-            printf("ast_right pointer: %p\n", ast_right);
-
-            ast* ast = make_ast_op(op, ast_left, ast_right);
-            //print_ast(ast_left);
-            //print_ast(ast_right);
-
             free_svec(left);
             free_svec(right);
-            return ast;
+            return op_ast;
         }
     }
 
@@ -112,9 +102,5 @@ parse_cmd(svec* tokens)
 
     cmd[cmd_len] = 0;
    
-    ast* cmd_ast = make_ast_cmd(cmd, cmd_len);
-
-    printf("cmd_ast pointer: %p\n", cmd_ast);
-
-    return cmd_ast;
+    return make_ast_cmd(cmd, cmd_len);
 }

@@ -7,25 +7,25 @@
 ast*
 make_ast_cmd(char** cmd, int cmd_len)
 {
-    ast* ast = malloc(sizeof(ast));
-    ast->op = "=";
-    ast->arg0 = NULL;
-    ast->arg1 = NULL;
-    ast->cmd = cmd;
-    ast->cmd_len = cmd_len;
-    return ast;
+    ast* new_ast = malloc(sizeof(ast));
+    new_ast->op = "=";
+    new_ast->arg0 = NULL;
+    new_ast->arg1 = NULL;
+    new_ast->cmd = cmd;
+    new_ast->cmd_len = cmd_len;
+    return new_ast;
 }
 
 ast*
 make_ast_op(char* op, ast* arg0, ast* arg1)
 {
-    ast* ast = malloc(sizeof(ast));
-    ast->op = op;
-    ast->arg0 = arg0;
-    ast->arg1 = arg1;
-    ast->cmd = NULL;
-    ast->cmd_len = 0;
-    return ast;
+    ast* new_ast = malloc(sizeof(ast));
+    new_ast->op = op;
+    new_ast->arg0 = arg0;
+    new_ast->arg1 = arg1;
+    new_ast->cmd = NULL;
+    new_ast->cmd_len = 0;
+    return new_ast;
 }
 
 void

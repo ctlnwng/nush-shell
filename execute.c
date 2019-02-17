@@ -27,33 +27,57 @@ execute_pipe(ast* ast)
 void
 execute_background(ast* ast)
 {
+    int cpid;
+    if ((cpid = fork())) {
+        execute(ast->arg1);
+    }
+    else {
+        execute(ast->arg0);
+    }
 }
 
 void
 execute_and(ast* ast)
 {
+    int cpid;
+    if ((cpid = fork())) {
+        int status;
+        waitpid(cpid, &status, 0);
+    }
+    else {
+        if (!execute(ast->arg0)) {
+            execute(ast->arg1);
+        }
+    }
 }
 
 void
 execute_or(ast* ast)
 {
+    int cpid;
+    if ((cpid = fork())) {
+        int status;
+        waitpid(cpid, &status, 0);
+
+        if (WIFEXITED(status)) {
+            execute(ast->arg1);
+        }
+    }
+    else {
+        if (execute(ast->arg0)) {
+            execute(ast->arg1);
+        };
+    }
 }
 
 void
 execute_semicolon(ast* ast)
 {
-    printf("%s\n", "in execute_semicolon");
-
     int cpid;
 
     if ((cpid = fork())) {
         int status;
         waitpid(cpid, &status, 0);
-
-        printf("child returned with wait code %d\n", status);
-        if (WIFEXITED(status)) {
-            printf("child exited with exit code (or main returned) %d\n", WEXITSTATUS(status));
-        }
     }
     else {
         execute(ast->arg0);
@@ -61,7 +85,7 @@ execute_semicolon(ast* ast)
     }
 }
 
-void
+int
 execute(ast* ast)
 {
     char* op = ast->op;
@@ -85,9 +109,6 @@ execute(ast* ast)
         int cpid;
 
         if ((cpid = fork())) {
-        // parent process
-        // printf("Parent pid: %d\n", getpid());
-        // printf("Parent knows child pid: %d\n", cpid);
 
         // Child may still be running until we wait.
 
@@ -95,27 +116,22 @@ execute(ast* ast)
             waitpid(cpid, &status, 0);
 
         // printf("== executed program complete ==\n");
-
-            printf("child returned with wait code %d\n", status);
-            if (WIFEXITED(status)) {
-                printf("child exited with exit code (or main returned) %d\n", WEXITSTATUS(status));
-            }
+                
+            //printf("child returned with wait code %d\n", status);
+           // if (WIFEXITED(status)) {
+             //   printf("child exited with exit code (or main returned) %d\n", WEXITSTATUS(status));
+            
+            //}
+            //
+            return status;
         }
         else {
-        // child process
-        //  printf("Child pid: %d\n", getpid());
-        // printf("Child knows parent pid: %d\n", getppid());
+            char** args = ast->cmd;
 
-         char** args = ast->cmd;
-
-        // The argv array for the child.
-        // Terminated by a null pointer.
-        // char* args[] = {cmd, "one", 0};
-            printf("first arg %s\n", args[0]);
-            printf("== executed program's output: ==\n");
+            // printf("== executed program's output: ==\n");
 
             execvp(args[0], args);
-            printf("Can't get here, exec only returns on error.");
+            return -1;
         }
     }
 }

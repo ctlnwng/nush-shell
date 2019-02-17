@@ -3,7 +3,7 @@
 
 #include "ast.h"
 
-void execute(ast* ast);
+int execute(ast* ast);
 void execute_redirect_input(ast* ast);
 void execute_redirect_output(ast* ast);
 void execute_pipe(ast* ast);
