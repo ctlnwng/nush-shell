@@ -45,6 +45,39 @@ execute_redirect_output(ast* ast)
 int
 execute_pipe(ast* ast)
 {
+    int saved_stdin = dup(0);
+    int saved_stdout = dup(1);
+
+    int cpid, rv;
+    
+    int pipes[2];
+    rv = pipe(pipes);
+
+    // pipes[0] is for reading
+    // pipes[1] is for writing
+    
+    if ((cpid = fork())) {
+        close(pipes[1]);
+
+        int status;
+        waitpid(cpid, &status, 0);
+        printf("get here");
+        close(0);
+        dup2(pipes[0], 0);
+
+        int arg1_result = execute(ast->arg1);
+        dup2(saved_stdin, 1);
+        return status;
+    }
+    else {
+        close(pipes[0]);
+        close(1);
+        dup2(pipes[1], 1);
+
+        int arg0_result = execute(ast->arg0);
+        dup2(saved_stdout, 0);
+        return arg0_result;
+    }
 }
 
 int
@@ -108,21 +141,13 @@ execute(ast* ast)
     } else if (streq(op, ";")) {
         return execute_semicolon(ast);
     } else {
-
+        /*
         int cpid;
 
         if ((cpid = fork())) {
-
             int status;
             waitpid(cpid, &status, 0);
-
-        // printf("== executed program complete ==\n");
                 
-            //printf("child returned with wait code %d\n", status);
-           // if (WIFEXITED(status)) {
-             //   printf("child exited with exit code (or main returned) %d\n", WEXITSTATUS(status));
-            
-            //}
             return status;
         }
         else {
@@ -131,5 +156,10 @@ execute(ast* ast)
             execvp(args[0], args);
             return -1;
         }
+        */
+
+        char** args = ast->cmd;
+        execvp(args[0], args);
+        return -1;
     }
 }
