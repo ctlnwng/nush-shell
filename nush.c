@@ -12,27 +12,59 @@
 #include "execute.h"
 
 int
-main(int _argc, char* _argv[])
+main(int argc, char* argv[])
 {
-    char cmd[256];
+    FILE* fp;
+    size_t len = 0;
+    ssize_t read_line;
+    char* line;
+    char buf[256];
+
+    int file_input = 0;
+
+    if (argc > 2) {
+        exit(1);
+    }
+    else if (argc == 2) {
+        file_input = 1;
+        fp = fopen(argv[1], "r");
+    }
 
     while(1) {
-        printf("nush$ ");
-        fflush(stdout);
-        char* input = fgets(cmd, 256, stdin);
 
-        if (!input) {
-            break;
+        if (!file_input) {
+            printf("nush$ ");
+            fflush(stdout);
+            line = fgets(buf, 256, stdin);
+
+            if (!line) {
+                break;
+            }
+        }
+        else {
+            /*
+             * printf("%zu:\n", read_line);
+            if ((read_line = getline(&line, &len, fp)) == -1) {
+                break;
+            }
+            */
+            line = fgets(buf, 256, fp);
+
+            if (feof(fp) != 0) {
+                fclose(fp);
+                break;
+            }
         }
 
-        svec* tokens = tokenize(input);
+        svec* tokens = tokenize(line);
         ast* token_ast = parse_cmd(tokens);
-//        print_ast(token_ast);
+        //print_ast(token_ast);
         execute(token_ast);
-        
+
         free_ast(token_ast);
         free_svec(tokens);
     }
+
     return 0;
 }
 

@@ -4,12 +4,12 @@
 #include "ast.h"
 
 int execute(ast* ast);
-void execute_redirect_input(ast* ast);
-void execute_redirect_output(ast* ast);
-void execute_pipe(ast* ast);
-void execute_background(ast* ast);
-void execute_and(ast* ast);
-void execute_or(ast* ast);
-void execute_semicolon(ast* ast);
+int execute_redirect_input(ast* ast);
+int execute_redirect_output(ast* ast);
+int execute_pipe(ast* ast);
+int execute_background(ast* ast);
+int execute_and(ast* ast);
+int execute_or(ast* ast);
+int execute_semicolon(ast* ast);
 
 #endif
