@@ -1,4 +1,4 @@
-// NOTE: Code for reading tokens is based on the 'calc' program from lecture notes
+// NOTE: Code from HW05
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,35 +7,6 @@
 
 #include "svec.h"
 #include "tokens.h"
-
-/*
-int
-main(int _argc, char* _argv[])
-{   
-    char buffer[256];
-    while (1) {
-        printf("tokens$ ");
-        fflush(stdout);
-
-        char* input = fgets(buffer, 256, stdin);
-
-        if (!input) {
-            break;
-        }
-
-        svec* tokens = tokenize(buffer);
-        reverse_svec(tokens); // reverse vector in place
-
-        for (int i = 0; i < tokens->size; ++i) {
-            printf("%s\n", tokens->data[i]);
-        }
-
-        free_svec(tokens);
-    }
-
-    return 0;
-}
-*/
 
 svec*
 tokenize(char* text)

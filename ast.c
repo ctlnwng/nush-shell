@@ -1,3 +1,5 @@
+// NOTE: Code based on ast.c from Lecture 9's 'cal'c program
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,7 +10,7 @@ ast*
 make_ast_cmd(char** cmd, int cmd_len)
 {
     ast* new_ast = malloc(sizeof(ast));
-    new_ast->op = "=";
+    new_ast->op = "="; // dummy operator for ASTs with no ops
     new_ast->arg0 = NULL;
     new_ast->arg1 = NULL;
     new_ast->cmd = cmd;
@@ -64,7 +66,6 @@ print_ast(ast* ast)
             for (int i = 0; i < ast->cmd_len; ++i) {
                 printf("%s ", ast->cmd[i]);
             }
-            // printf("%s\n", ast->cmd[0]);
 
             printf("\n");
         }
@@ -78,26 +79,3 @@ print_ast(ast* ast)
         }
     }
 }
-
-
-/*
-int
-ast_eval(calc_ast* ast)
-{
-    switch (ast->op) {
-    case '=':
-        return ast->value;
-    case '+':
-        return ast_eval(ast->arg0) + ast_eval(ast->arg1);
-    case '-':
-        return ast_eval(ast->arg0) - ast_eval(ast->arg1);
-    case '*':
-        return ast_eval(ast->arg0) * ast_eval(ast->arg1);
-    case '/':
-        return ast_eval(ast->arg0) / ast_eval(ast->arg1);
-    default:
-        fprintf(stderr, "Unknown op: %c\n", ast->op);
-        exit(1);
-    }
-}
-*/

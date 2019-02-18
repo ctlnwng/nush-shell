@@ -31,7 +31,6 @@ main(int argc, char* argv[])
     }
 
     while(1) {
-
         if (!file_input) {
             printf("nush$ ");
             fflush(stdout);
@@ -42,12 +41,6 @@ main(int argc, char* argv[])
             }
         }
         else {
-            /*
-             * printf("%zu:\n", read_line);
-            if ((read_line = getline(&line, &len, fp)) == -1) {
-                break;
-            }
-            */
             line = fgets(buf, 256, fp);
             fflush(fp);
 
@@ -59,7 +52,7 @@ main(int argc, char* argv[])
 
         svec* tokens = tokenize(line);
         ast* token_ast = parse_cmd(tokens);
-//        print_ast(token_ast);
+        // print_ast(token_ast);
         execute(token_ast);
 
         free_ast(token_ast);

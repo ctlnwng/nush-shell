@@ -1,4 +1,4 @@
-// NOTE: All svec functions besides 'reverse_svec' are from lecture notes (calc program)*
+// NOTE: All svec functions besides 'reverse_svec' are from Lecture 9's 'calc' program
 
 #include <string.h>
 #include <stdlib.h>

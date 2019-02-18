@@ -1,3 +1,4 @@
+// NOTE: Most functions from the parse.c file in Lecture 9's 'calc' program
 
 #include <stdio.h>
 #include <ctype.h>
@@ -40,38 +41,12 @@ slice(svec* xs, int i0, int i1)
     }
     return ys;
 }
-/*
-calc_ast*
-parse(svec* toks)
-{
-    if (toks->size == 1) {
-        int vv = atoi(toks->data[0]);
-        return make_ast_value(vv);
-    }
-
-    const char* ops[] = {"+", "-", "*", "/"};
-
-    for (int ii = 0; ii < 4; ++ii) {
-        const char* op = ops[ii];
-
-        if (contains(toks, op)) {
-            int jj = find_first_index(toks, op);
-            svec* xs = slice(toks, 0, jj);
-            svec* ys = slice(toks, jj + 1, toks->size);
-            calc_ast* ast = make_ast_op(op[0], parse(xs), parse(ys));
-            free_svec(xs);
-            free_svec(ys);
-            return ast;
-        }
-    }
-
-    fprintf(stderr, "Invalid token stream");
-    exit(1);
-}*/
 
 ast*
 parse_cmd(svec* tokens)
 {
+    // ops in reverse precedence, since the first operator to
+    // get added to the AST will be evaluated last
     char* ops[] = {"&", ";", "||", "&&", ">", "<", "|"};
 
     for (int i = 0; i < 7; ++i) {
@@ -90,7 +65,7 @@ parse_cmd(svec* tokens)
         }
     }
 
-    char** cmd = malloc((tokens->size + 1) * sizeof(char*)); //malloc throws error here
+    char** cmd = malloc((tokens->size + 1) * sizeof(char*));
     int cmd_len = tokens->size;
 
     for (int i = 0; i < tokens->size; ++i) {
