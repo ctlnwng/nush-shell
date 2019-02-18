@@ -72,7 +72,7 @@ parse(svec* toks)
 ast*
 parse_cmd(svec* tokens)
 {
-    char* ops[] = {"|", ">", "<", "&&", "||", ";", "&"};
+    char* ops[] = {"&", ";", "||", "&&", ">", "<", "|"};
 
     for (int i = 0; i < 7; ++i) {
         char* op = ops[i];
