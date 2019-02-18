@@ -44,14 +44,14 @@ execute_redirect_output(ast* ast)
 
 int
 execute_pipe(ast* ast)
-{/*
+{
     int saved_stdin = dup(0);
     int saved_stdout = dup(1);
 
     int cpid, rv;
     
     int pipes[2];
-    rv = pipe(pipes);
+    pipe(pipes);
 
     // pipes[0] is for reading
     // pipes[1] is for writing
@@ -61,24 +61,22 @@ execute_pipe(ast* ast)
 
         int status;
         waitpid(cpid, &status, 0);
-        printf("get here");
         close(0);
-        dup2(pipes[0], 0);
+        dup(pipes[0]);
 
-        int arg1_result = execute(ast->arg1);
+        execute(ast->arg1);
         dup2(saved_stdin, 1);
         return status;
     }
     else {
         close(pipes[0]);
         close(1);
-        dup2(pipes[1], 1);
+        dup(pipes[1]);
 
-        int arg0_result = execute(ast->arg0);
+        execute(ast->arg0);
         dup2(saved_stdout, 0);
-        return arg0_result;
+        exit(0);
     }
-    */
 }
 
 int
@@ -86,7 +84,7 @@ execute_background(ast* ast)
 {
     int cpid;
     if ((cpid = fork())) {
-        return execute(ast->arg1);
+        execute(ast->arg1);
     }
     else {
         execute(ast->arg0);
