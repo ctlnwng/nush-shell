@@ -49,6 +49,7 @@ main(int argc, char* argv[])
             }
             */
             line = fgets(buf, 256, fp);
+            fflush(fp);
 
             if (feof(fp) != 0) {
                 fclose(fp);
