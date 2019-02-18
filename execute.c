@@ -89,7 +89,8 @@ execute_background(ast* ast)
         return execute(ast->arg1);
     }
     else {
-        return execute(ast->arg0);
+        execute(ast->arg0);
+        exit(0);
     }
 }
 
@@ -125,6 +126,10 @@ execute_semicolon(ast* ast)
 int
 execute(ast* ast)
 {
+    if (!ast) {
+        return 0;
+    }
+
     char* op = ast->op;
 
     if (streq(op, "<")) {
@@ -162,8 +167,7 @@ execute(ast* ast)
 
             if ((cpid = fork())) {
                 int status;
-                waitpid(cpid, &status, 0);
-                    
+                waitpid(cpid, &status, 0); 
                 return status;
             }
             else {
@@ -172,12 +176,6 @@ execute(ast* ast)
                 execvp(args[0], args);
                 return -1;
             }
-            
-            /*
-            char** args = ast->cmd;
-            execvp(args[0], args);
-            return -1;
-            */
         }
     }
 }
