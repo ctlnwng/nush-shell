@@ -13,15 +13,14 @@
 int
 execute_redirect_input(ast* ast)
 {
-    int cpid;
-    int saved_stdin = dup(0);
-
+    int saved_stdin = dup(0); // save stdin to restore later
     char* file = ast->arg1->cmd[0];
     close(0);
     
-    open(file, O_RDONLY | O_CREAT);
+    open(file, O_RDONLY | O_CREAT); // open in file descriptor 0
+
     int arg0_result = execute(ast->arg0);
-    dup2(saved_stdin, 0);
+    dup2(saved_stdin, 0); // restore stdin
     
     return arg0_result;
 }
@@ -29,15 +28,14 @@ execute_redirect_input(ast* ast)
 int
 execute_redirect_output(ast* ast)
 {
-    int cpid;
-    int saved_stdout = dup(1);
-
+    int saved_stdout = dup(1); // save stdout to restore later
     char* file = ast->arg1->cmd[0];
     close(1);
         
-    open(file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+    open(file, O_CREAT | O_TRUNC | O_WRONLY, 0644); // open in file descriptor 1
+
     int arg0_result = execute(ast->arg0);
-    dup2(saved_stdout, 1);
+    dup2(saved_stdout, 1); // restore stdout
 
     return arg0_result;
 }
@@ -48,8 +46,7 @@ execute_pipe(ast* ast)
     int saved_stdin = dup(0);
     int saved_stdout = dup(1);
 
-    int cpid, rv;
-    
+    int cpid;
     int pipes[2];
     pipe(pipes);
 
@@ -61,11 +58,12 @@ execute_pipe(ast* ast)
 
         int status;
         waitpid(cpid, &status, 0);
+
         close(0);
         dup(pipes[0]);
 
         execute(ast->arg1);
-        dup2(saved_stdin, 1);
+        dup2(saved_stdin, 0); // restore stdin
         return status;
     }
     else {
@@ -74,7 +72,7 @@ execute_pipe(ast* ast)
         dup(pipes[1]);
 
         execute(ast->arg0);
-        dup2(saved_stdout, 0);
+        dup2(saved_stdout, 1); // restore stdout
         exit(0);
     }
 }
@@ -145,9 +143,8 @@ execute(ast* ast)
     } else if (streq(op, ";")) {
         return execute_semicolon(ast);
     } else {
-
         if (ast->cmd_len >= 1) {
-
+            // handle 'cd'
             if (streq(ast->cmd[0], "cd")) {
                 if (ast->cmd[1]) {
                     return chdir(ast->cmd[1]);
@@ -156,11 +153,13 @@ execute(ast* ast)
                     return chdir("~");
                 }
             }
-
+            
+            // handle 'exit'
             if (streq(ast->cmd[0], "exit")) {
                 exit(0);
             }
             
+            // execute command
             int cpid;
 
             if ((cpid = fork())) {
@@ -170,7 +169,6 @@ execute(ast* ast)
             }
             else {
                 char** args = ast->cmd;
-
                 execvp(args[0], args);
                 return -1;
             }

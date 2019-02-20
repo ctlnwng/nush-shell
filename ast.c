@@ -41,7 +41,9 @@ free_ast(ast* ast)
         if (ast->arg1) {
             free_ast(ast->arg1);
         }
+
         if (ast->cmd) {
+            // free all strings in ast->cmd array
             for (int i = 0; i < ast->cmd_len; ++i) {
                 free(ast->cmd[i]);
             }
@@ -49,33 +51,5 @@ free_ast(ast* ast)
         }
         
         free(ast);
-    }
-}
-
-void
-print_ast(ast* ast)
-{
-    if (ast) {
-        if (ast->op) {
-            printf("%s\n", ast->op);
-         }
-
-        if (ast->cmd) {
-            printf("size: %d\n", ast->cmd_len);
-            
-            for (int i = 0; i < ast->cmd_len; ++i) {
-                printf("%s ", ast->cmd[i]);
-            }
-
-            printf("\n");
-        }
-
-        if (ast->arg0) {
-            print_ast(ast->arg0);
-        }
-
-        if (ast->arg1) {
-            print_ast(ast->arg1);
-        }
     }
 }

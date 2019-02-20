@@ -1,4 +1,4 @@
-// NOTE: Code from HW05
+// NOTE: Code is built upon HW05
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +27,11 @@ tokenize(char* text)
         svec_push_back(tokens, tkn);
         i += strlen(tkn);
         
+        // ignore closing quote in token
+        if (i < textLen && text[i] == '"') {
+            ++i;
+        }
+
         // tkn is a malloc'd char*
         free(tkn);
     }
@@ -40,12 +45,23 @@ read_token(char* text, int i)
     int n = 0;
     char* tkn = malloc(3); // max. necessary size for operator
 
-    // count size of string with no operators/spaces
-    while (!is_op(text[i+n]) && !isspace(text[i+n])) {
-        ++n;
+    // count characters between double quotes
+    if (text[i+n] == '"') {
+        ++i;  // don't include quote character in token
+
+        while (text[i + n] != '"') {
+            ++n;
+        };
+    }
+    // count characters between operators/spaces
+    else {
+
+        while (!is_op(text[i+n]) && !isspace(text[i+n])) {
+            ++n;
+        }
     }
 
-    // if no operators exist, realloc string
+    // if no operators exist, realloc string appropriately
     if (n > 0) {
         tkn = realloc(tkn, n + 1);
     }
@@ -99,6 +115,11 @@ is_op(char c)
         case '&':
             return 1;
         case ';':
+            return 1;
+        // added left and right parentheses as operators to parse later
+        case '(':
+            return 1;
+        case ')':
             return 1;
         default:
             return 0;

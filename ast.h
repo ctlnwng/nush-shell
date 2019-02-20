@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 typedef struct ast {
-    char* op;
-    // Op is one of: >, <, ;, &&, ||, &, |
+    char* op; // op is one of: >, <, ;, &&, ||, &, |
     struct ast* arg0;
     struct ast* arg1;
     char** cmd;
@@ -15,7 +14,6 @@ typedef struct ast {
 ast* make_ast_cmd(char** cmd, int cmd_len);
 ast* make_ast_op(char* op, ast* arg0, ast* arg1);
 void free_ast(ast* ast);
-void print_ast(ast* ast);
 
 #endif
 

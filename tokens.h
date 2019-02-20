@@ -8,5 +8,4 @@ int get_op_size(char* text, int i);
 int is_op(char c);
 svec* tokenize(char* text);
 
-
 #endif
